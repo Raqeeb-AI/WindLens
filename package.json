@@ -1,0 +1,10 @@
+{
+  "name": "windlens",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Cutoff-Aware UK National Wind Generation Forecast Intelligence Dashboard",
+  "scripts": {
+    "build": "npm --prefix frontend run build",
+    "install:frontend": "npm --prefix frontend install"
+  }
+}

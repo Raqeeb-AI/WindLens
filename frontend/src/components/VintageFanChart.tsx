@@ -62,16 +62,16 @@ export const VintageFanChart: React.FC<VintageFanChartProps> = ({ vintageData })
   });
 
   return (
-    <div className="bg-surface rounded-lg border border-border shadow-card mb-6 overflow-hidden">
+    <div className="bg-surface rounded-xl border border-border shadow-card mb-6 overflow-hidden">
       {/* Header with Collapsible Toggle */}
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full p-4 sm:p-5 flex items-center justify-between text-left hover:bg-surface-subtle/50 transition-colors cursor-pointer"
+        className="touch-press w-full p-4 sm:p-5 flex items-center justify-between text-left hover:bg-surface-subtle/50 transition-colors cursor-pointer"
         aria-expanded={isOpen}
       >
         <div className="flex items-center space-x-3">
-          <div className="w-8 h-8 rounded bg-forecast/10 border border-forecast/20 flex items-center justify-center text-forecast flex-shrink-0">
+          <div className="w-8 h-8 rounded-lg bg-forecast/10 border border-forecast/20 flex items-center justify-center text-forecast flex-shrink-0">
             <GitBranch className="w-4 h-4" />
           </div>
           <div>
@@ -79,7 +79,7 @@ export const VintageFanChart: React.FC<VintageFanChartProps> = ({ vintageData })
               <h3 className="font-serif text-base font-bold text-text-primary">
                 Forecast Revision History & Cutoff Sensitivity
               </h3>
-              <span className="text-[11px] px-2 py-0.5 rounded bg-surface-subtle text-text-tertiary border border-border font-medium">
+              <span className="text-[10px] uppercase font-mono px-2 py-0.5 rounded bg-surface-subtle text-text-tertiary border border-border font-semibold">
                 Secondary Analysis
               </span>
             </div>
@@ -97,7 +97,7 @@ export const VintageFanChart: React.FC<VintageFanChartProps> = ({ vintageData })
 
       {/* Expandable Content */}
       {isOpen && (
-        <div className="p-4 sm:p-5 pt-0 border-t border-border/60">
+        <div className="animate-fade-in-up p-4 sm:p-5 pt-0 border-t border-border/60">
           {/* Controls: Active Vintage Toggles */}
           <div className="flex flex-wrap items-center justify-between gap-2 py-3 mb-3 border-b border-surface-subtle">
             <span className="text-xs font-semibold text-text-secondary uppercase tracking-wider">
@@ -113,9 +113,9 @@ export const VintageFanChart: React.FC<VintageFanChartProps> = ({ vintageData })
                     key={v.cutoff_time}
                     type="button"
                     onClick={() => toggleCutoff(v.cutoff_time)}
-                    className={`text-xs px-2.5 py-1 rounded border flex items-center space-x-1.5 transition-colors cursor-pointer ${
+                    className={`touch-press text-xs px-2.5 py-1 rounded-md border flex items-center space-x-1.5 transition-all cursor-pointer ${
                       isSelected
-                        ? 'bg-surface-subtle border-border-strong text-text-primary font-medium'
+                        ? 'bg-surface-subtle border-border-strong text-text-primary font-medium shadow-2xs'
                         : 'bg-background border-border text-text-tertiary line-through opacity-60'
                     }`}
                   >
