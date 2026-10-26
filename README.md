@@ -74,6 +74,9 @@ $$\text{Selected Forecast}(t, c) = \operatorname{argmax}_{r \in \text{Eligible F
 
 ```
 Gridbricks/
+├── api/
+│   └── index.py                     # Vercel serverless ASGI entrypoint (imports FastAPI app)
+│
 ├── backend/
 │   ├── app/
 │   │   ├── main.py                  # FastAPI application & unified React SPA static hosting
@@ -113,6 +116,8 @@ Gridbricks/
 │   ├── src/
 │   │   ├── components/              # Editorial UI components
 │   │   │   ├── Navbar.tsx           # Compact header with view tabs & status badge
+│   │   │   ├── Sidebar.tsx          # Navigation sidebar with brand logo & live system indicators
+│   │   │   ├── CalendarPopover.tsx  # Dual-column interactive calendar & verified case studies
 │   │   │   ├── DecisionControls.tsx # Date selector, dual date badge, compact cutoff picker
 │   │   │   ├── ForecastActualChart.tsx # Centerpiece time-series with non-color visual distinctions
 │   │   │   ├── VintageFanChart.tsx  # Collapsible multi-cutoff forecast revision drawer
@@ -122,11 +127,11 @@ Gridbricks/
 │   │   │   ├── LeadTimeChart.tsx    # Forecast degradation across lead-time horizons
 │   │   │   └── MethodologyView.tsx  # Client-oriented Q&A guide with collapsible formulas
 │   │   ├── types/api.ts             # TypeScript API interfaces mirrored from backend contracts
-│   │   ├── lib/api.ts               # HTTP client with Axios / fetch
+│   │   ├── lib/api.ts               # HTTP client with Axios / fetch (auto DEV/PROD fallback)
 │   │   ├── App.tsx                  # Root application shell with 3-tier KPI hierarchy
 │   │   ├── main.tsx                 # Application entry point with React Query provider
 │   │   └── index.css                # Curated editorial design tokens (#FAF8F4, #D95635, etc.)
-│   ├── dist/                        # Production build bundle (served by FastAPI in production)
+│   ├── dist/                        # Production build bundle (served by FastAPI / Vercel CDN)
 │   ├── package.json                 # Locked Node dependencies
 │   └── tailwind.config.js           # Curated editorial theme configuration
 │
@@ -139,22 +144,33 @@ Gridbricks/
 ├── docs/                            # Comprehensive engineering and audit documentation
 │   ├── phase-1-findings.md          # Initial Elexon verification & schema probe findings
 │   ├── pre-deployment-audit.md      # Formal pre-deployment verification & test report
-│   └── frontend-improvement-backlog.md # Record of completed UX simplifications
+│   └── deployment-guide.md          # Zero-cost Vercel & local deployment instructions
 │
 ├── Dockerfile                       # Multi-stage production container (Node build + Python slim)
 ├── docker-compose.yml               # Local container orchestration
-└── pyproject.toml                   # Pytest configuration
+├── package.json                     # Root build coordinator for Vercel
+├── pyproject.toml                   # Pytest configuration
+├── requirements.txt                 # Root runtime Python dependencies for Vercel Serverless
+└── vercel.json                      # Vercel Hobby serverless routing & Parquet asset bundling
 ```
 
 ---
 
-## 5. Quickstart & Local Execution
+## 5. Deployment & Execution Options
 
-### Prerequisites
-- Python 3.11+
-- Node.js 18+ (Node 22 recommended)
+### Option A: Zero-Cost Vercel Serverless Deployment (Recommended)
+WindLens is pre-configured for **100% free Vercel Hobby** deployment with zero paid infrastructure:
+- **Frontend:** Built by Vite and hosted on Vercel's global Edge CDN.
+- **Backend:** FastAPI runs inside an AWS Lambda Python serverless function via `api/index.py` with zero idle compute cost.
+- **Data Snapshots:** Lightweight Parquet files (~122 KB total) are bundled directly into the function sandbox (`vercel.json` includes `data/processed/**`).
 
-### Option A: Unified FastAPI Serving (Simplest)
+**Deploying to Vercel in 2 minutes:**
+1. Push this repository to your GitHub account.
+2. In [Vercel Dashboard](https://vercel.com/new), click **"Add New Project"** and import `WindLens`.
+3. Keep default settings (`Framework Preset: Other`, Root directory: `./`).
+4. Click **Deploy**. Vercel will run `npm --prefix frontend run build`, bundle `api/index.py` with `requirements.txt`, and provide a permanent `*.vercel.app` production URL.
+
+### Option B: Local Unified FastAPI Serving (Simplest Local)
 The FastAPI backend serves both the REST API and the pre-built React frontend bundle from `frontend/dist`:
 
 ```bash
@@ -166,7 +182,7 @@ uvicorn backend.app.main:app --host 127.0.0.1 --port 8000
 ```
 Open **[http://localhost:8000](http://localhost:8000)** in your browser.
 
-### Option B: Independent Frontend Development
+### Option C: Independent Frontend Development
 ```bash
 # Terminal 1: Backend API
 uvicorn backend.app.main:app --host 127.0.0.1 --port 8000 --reload

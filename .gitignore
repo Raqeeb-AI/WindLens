@@ -49,8 +49,16 @@ frontend/dist/
 *.log
 .system_generated/
 
+# Internal assessment submission & video scripts (kept locally, not tracked)
+docs/video-scripts.md
+docs/submission-checklist.md
+docs/frontend-improvement-backlog.md
+docs/archive/
+
 # OS / IDE
 .DS_Store
 Thumbs.db
 .vscode/
 .idea/
+
+.vercel
