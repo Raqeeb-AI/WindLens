@@ -73,7 +73,7 @@ $$\text{Selected Forecast}(t, c) = \operatorname{argmax}_{r \in \text{Eligible F
 ## 4. Repository File & Folder Tree
 
 ```
-Gridbricks/
+WindLens/
 ├── api/
 │   └── index.py                     # Vercel serverless ASGI entrypoint (imports FastAPI app)
 │
@@ -166,9 +166,9 @@ WindLens is pre-configured for **100% free Vercel Hobby** deployment with zero p
 
 **Deploying to Vercel in 2 minutes:**
 1. Push this repository to your GitHub account.
-2. In [Vercel Dashboard](https://vercel.com/new), click **"Add New Project"** and import `WindLens`.
+2. In [Vercel Dashboard](https://vercel.com/new), click **"Add New Project"** and import the repository.
 3. Keep default settings (`Framework Preset: Other`, Root directory: `./`).
-4. Click **Deploy**. Vercel will run `npm --prefix frontend run build`, bundle `api/index.py` with `requirements.txt`, and provide a permanent `*.vercel.app` production URL.
+4. Click **Deploy**. Vercel will run `cd frontend && npm run build`, bundle `api/index.py` with `requirements.txt`, and provide a permanent `*.vercel.app` production URL.
 
 ### Option B: Local Unified FastAPI Serving (Simplest Local)
 The FastAPI backend serves both the REST API and the pre-built React frontend bundle from `frontend/dist`:
