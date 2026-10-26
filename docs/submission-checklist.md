@@ -1,6 +1,6 @@
 # WindLens — Final Submission Checklist for Project Owner
 
-**Target Repository:** [https://github.com/Raqeeb-AI/GridBricks](https://github.com/Raqeeb-AI/GridBricks)  
+**Target Repository:** [https://github.com/Raqeeb-AI/WindLens](https://github.com/Raqeeb-AI/WindLens)  
 **Required Microsoft Submission Form:** [https://forms.cloud.microsoft/r/FTX6K2bbnU](https://forms.cloud.microsoft/r/FTX6K2bbnU)  
 
 ---
@@ -20,7 +20,7 @@ The final actions below must be personally completed and submitted by you:
 - [x] **Frontend TypeScript & Build:** `tsc -b && vite build` builds cleanly in <2s.
 - [x] **Visual QA:** Verified across desktop (1280×800) and mobile (390×844) viewports with zero layout bugs.
 - [x] **Clean Local Git History:** Latest commit `4da6d7f` on branch `master`.
-- [x] **Remote Configured:** `origin` set to `https://github.com/Raqeeb-AI/GridBricks.git`.
+- [x] **Remote Configured:** `origin` set to `https://github.com/Raqeeb-AI/WindLens.git`.
 - [ ] **Push Approved Code to GitHub:**
   When you are ready to publish, execute:
   ```bash
@@ -64,7 +64,7 @@ Open the official Microsoft Form:
 
 Prepare the required inputs:
 1. **Full Name & Contact Information**
-2. **GitHub Repository URL:** `https://github.com/Raqeeb-AI/GridBricks`
+2. **GitHub Repository URL:** `https://github.com/Raqeeb-AI/WindLens`
 3. **Customer Demo Video URL:** (Your unlisted video link)
 4. **Technical Lead Review Video URL:** (Your unlisted video link)
 5. **Live Deployed Application URL:** (If deployed, e.g., Render/Railway URL)

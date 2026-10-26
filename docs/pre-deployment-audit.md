@@ -2,7 +2,7 @@
 
 **Date of Audit:** 26 October 2026  
 **Audit Executed By:** Senior Data Engineer & Software Architect  
-**Target Repository:** [https://github.com/Raqeeb-AI/GridBricks](https://github.com/Raqeeb-AI/GridBricks)  
+**Target Repository:** [https://github.com/Raqeeb-AI/WindLens](https://github.com/Raqeeb-AI/WindLens)  
 **Status:** **PASSED — ALL VERIFICATION CRITERIA SATISFIED**
 
 ---
