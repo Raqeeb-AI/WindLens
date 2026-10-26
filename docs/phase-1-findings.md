@@ -225,7 +225,7 @@ The following probe scripts and artifacts were created in Phase 1 and are commit
 ## 9. Proposed Project Architecture for Subsequent Phases
 
 ```
-Gridbricks/
+WindLens/
 ├── backend/
 │   ├── app/
 │   │   ├── main.py                  # FastAPI application entrypoint & CORS

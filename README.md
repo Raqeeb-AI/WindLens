@@ -101,7 +101,7 @@ WindLens/
 │   │       └── config.py
 │   ├── etl/                         # Verification probes, live BMRS fetchers, snapshot builder
 │   │   ├── probe_elexon.py          # Initial live BMRS API probe
-│   │   ├── fetch_raw_data.py        # Stream fetcher for January 2026 FUELHH & WINDFOR
+│   │   ├── fetch.py                 # Stream fetcher for January 2026 FUELHH & WINDFOR
 │   │   ├── build_snapshot.py        # Snapshot builder (outputs processed Parquet tables)
 │   │   └── audit_data.py            # Comprehensive verification & lookahead audit script
 │   ├── tests/                       # Automated Pytest suite
