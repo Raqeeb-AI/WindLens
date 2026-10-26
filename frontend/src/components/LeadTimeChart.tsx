@@ -7,7 +7,7 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
-  Legend
+  Legend,
 } from 'recharts';
 import type { LeadTimeItem } from '../types/api';
 
@@ -20,10 +20,10 @@ export const LeadTimeChart: React.FC<LeadTimeChartProps> = ({ data }) => {
     <div className="bg-surface rounded-lg p-5 border border-border shadow-card">
       <div className="mb-4 pb-3 border-b border-border">
         <h3 className="font-serif text-base font-bold text-text-primary">
-          Accuracy Decay by Forecast Lead Time
+          Lead-Time Decay: Error vs Forecast Horizon
         </h3>
-        <p className="text-xs text-text-secondary mt-0.5">
-          MAE and RMSE grouped by hours between publication and physical delivery.
+        <p className="text-xs text-text-secondary mt-0.5 leading-relaxed">
+          Evaluates how forecast accuracy changes as the time between publication and physical delivery expands.
         </p>
       </div>
 
@@ -37,24 +37,45 @@ export const LeadTimeChart: React.FC<LeadTimeChartProps> = ({ data }) => {
               fontSize={10}
               tickLine={false}
               axisLine={{ stroke: '#E5E0D7' }}
-              label={{ value: 'Lead Time Horizon', position: 'insideBottom', offset: -10, fontSize: 10, fill: '#69675F' }}
+              label={{
+                value: 'Forecast Lead Time Horizon',
+                position: 'insideBottom',
+                offset: -10,
+                fontSize: 10,
+                fill: '#69675F',
+              }}
             />
             <YAxis
               stroke="#69675F"
               fontSize={10}
               tickLine={false}
               axisLine={{ stroke: '#E5E0D7' }}
+              tickFormatter={(v) => `${(v / 1000).toFixed(0)}k`}
             />
             <Tooltip
-              formatter={(val: any, name: any) => [`${val} MW`, name]}
-              contentStyle={{ backgroundColor: '#FFFFFF', borderColor: '#E5E0D7', borderRadius: '8px', fontSize: '11px' }}
+              formatter={(val: any, name: any) => [`${Number(val).toLocaleString()} MW`, name]}
+              contentStyle={{
+                backgroundColor: '#FFFFFF',
+                borderColor: '#E5E0D7',
+                borderRadius: '8px',
+                fontSize: '11px',
+              }}
             />
-            <Legend verticalAlign="top" align="right" wrapperStyle={{ paddingBottom: '8px', fontSize: '11px' }} />
+            <Legend
+              verticalAlign="top"
+              align="right"
+              iconType="circle"
+              wrapperStyle={{ paddingBottom: '8px', fontSize: '11px' }}
+            />
             <Bar dataKey="mae_mw" name="MAE (MW)" fill="#D95635" radius={[2, 2, 0, 0]} />
-            <Bar dataKey="rmse_mw" name="RMSE (MW)" fill="#7A4B76" radius={[2, 2, 0, 0]} />
+            <Bar dataKey="rmse_mw" name="RMSE (MW)" fill="#A96E13" radius={[2, 2, 0, 0]} />
           </BarChart>
         </ResponsiveContainer>
       </div>
+
+      <p className="text-[11px] text-text-tertiary mt-2 pt-2 border-t border-surface-subtle">
+        Takeaway: Nearer-term delivery hours (12–18h lead time) typically exhibit tighter errors than distant hours (30–36h).
+      </p>
     </div>
   );
 };
