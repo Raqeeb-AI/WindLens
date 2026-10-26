@@ -27,7 +27,7 @@ WindLens solves this challenge by implementing an audit-grade, cutoff-aware fore
 
 1. **Information Horizon at Decision Cutoff:** Exactly what national wind generation forecast was available to traders at a specified day-ahead cutoff time (e.g., Day-Ahead at 09:00 Europe/London)?
 2. **Physical Delivery Reconciliation:** How did the cutoff-locked forecast perform against physical transmission-connected generation for the 24 hourly settlement intervals of the delivery day ($D+1$, 00:00 to 23:00 UTC)?
-3. **Statistical Bias & Forecast Skill:** How consistent was forecast bias across January 2026, and how much economic and volumetric risk reduction did the forecast provide relative to standard persistence baselines?
+3. **Statistical Bias & Forecast Skill:** How consistent was forecast bias across January 2026, and how much physical volumetric forecast error reduction did the forecast achieve relative to standard persistence baselines?
 
 > **Important Date Semantics:** Decision dates ($D$) and physical delivery dates ($D+1$) represent distinct time horizons. Day-ahead procurement decisions finalized between 1 January and 31 January 2026 govern physical power deliveries between 2 January and 1 February 2026.
 
@@ -57,7 +57,7 @@ WindLens solves this challenge by implementing an audit-grade, cutoff-aware fore
 ### Fresh Clone Commands
 
 ```bash
-# 1. Clone the anonymous repository
+# 1. Clone the repository
 git clone https://github.com/Raqeeb-AI/x7k2m9p4.git
 cd x7k2m9p4
 
@@ -74,7 +74,7 @@ cd ..
 uvicorn backend.app.main:app --host 127.0.0.1 --port 8000
 ```
 
-Open **[http://localhost:8000](http://localhost:8000)** in your browser. The FastAPI server serves both the REST API under `/api/v1` and the pre-compiled React single-page application at `/`.
+Open [http://localhost:8000](http://localhost:8000) in your browser. The FastAPI server serves both the REST API under `/api/v1` and the pre-compiled React single-page application at `/`.
 
 ### Independent Development Mode (Hot Reloading)
 
@@ -89,7 +89,7 @@ cd frontend
 npm install
 npm run dev
 ```
-Open **[http://localhost:5173](http://localhost:5173)**. The Vite dev server automatically proxies API requests to `http://localhost:8000/api/v1`.
+Open [http://localhost:5173](http://localhost:5173) in your browser. The Vite dev server automatically proxies API requests to `http://localhost:8000/api/v1`.
 
 ---
 
@@ -148,14 +148,14 @@ The following figures have been empirically verified against the raw BMRS data a
 | Evaluation Metric | Mathematical Definition | Verified Value | Interpretation |
 | :--- | :--- | :--- | :--- |
 | **Evaluated Delivery Intervals** | $N = 31 \text{ days} \times 24 \text{ hours}$ | **744 hours** | 100% complete temporal coverage across January 2026 |
-| **Mean Absolute Error (MAE)** | $\frac{1}{N}\sum \|F_t - A_t\|$ | **2,038.91 MW** | Average magnitude of forecast error across the month |
-| **Mean Systematic Bias** | $\frac{1}{N}\sum (F_t - A_t)$ | **+1,747.89 MW** | Strong systematic tendency to overpredict wind generation |
-| **Root Mean Square Error (RMSE)** | $\sqrt{\frac{1}{N}\sum (F_t - A_t)^2}$ | **2,504.76 MW** | Penalizes large errors during high-ramp/storm events |
-| **Mean Absolute Percentage Error (MAPE)** | $\frac{1}{N}\sum \frac{\|F_t - A_t\|}{A_t}$ | **22.04%** | Normalized average relative error across delivery hours |
+| **Mean Absolute Error (MAE)** | $\frac{1}{N}\sum_{t=1}^N \lvert F_t - A_t \rvert$ | **2,038.91 MW** | Average magnitude of physical forecast error across the month |
+| **Mean Systematic Bias** | $\frac{1}{N}\sum_{t=1}^N (F_t - A_t)$ | **+1,747.89 MW** | Strong systematic tendency to overpredict physical wind generation |
+| **Root Mean Square Error (RMSE)** | $\sqrt{\frac{1}{N}\sum_{t=1}^N (F_t - A_t)^2}$ | **2,504.76 MW** | Penalizes large errors during high-ramp/storm events |
+| **Mean Absolute Percentage Error (MAPE)** | $\frac{100}{M}\sum_{t: A_t \ge 100} \frac{\lvert F_t - A_t \rvert}{A_t}$ | **22.04%** | Evaluated on intervals with $A_t \ge 100\text{ MW}$ to guard against near-zero division distortion. Minimum GB transmission wind was 1,711.5 MW, so all 744 intervals were validly included ($M = N = 744$). |
 | **Overforecast Frequency** | $\sum \mathbb{I}(F_t > A_t) / N$ | **84.95%** (632 / 744) | Forecasts exceeded actuals in 85% of delivery hours |
 | **Underforecast Frequency** | $\sum \mathbb{I}(F_t < A_t) / N$ | **15.05%** (112 / 744) | Forecasts were below actuals in only 15% of delivery hours |
-| **Day-Ahead Persistence Baseline MAE** | $\frac{1}{N}\sum \|A_{t-24\text{h}} - A_t\|$ | **4,261.83 MW** | Naive 24-hour persistence baseline benchmark |
-| **Forecast Skill Score vs. Baseline** | $1 - \frac{\text{MAE}_{\text{model}}}{\text{MAE}_{\text{baseline}}}$ | **+52.16%** | Cutoff forecast cut error by >52% compared to persistence |
+| **Day-Ahead Persistence Baseline MAE** | $\frac{1}{N}\sum_{t=1}^N \lvert A_{t-24\text{h}} - A_t \rvert$ | **4,261.83 MW** | Naive 24-hour physical persistence baseline benchmark |
+| **Forecast Skill Score vs. Baseline** | $1 - \frac{\text{MAE}_{\text{model}}}{\text{MAE}_{\text{baseline}}}$ | **+52.16%** | Cutoff forecast reduced physical error by 52.16% compared to persistence |
 
 ### Accuracy Degradation by Lead-Time Horizon
 
@@ -289,7 +289,7 @@ The backend exposes a structured, OpenAPI-compliant REST API. When running local
 
 ## 8. Docker Instructions
 
-WindLens provides a production-grade multi-stage container ([Dockerfile](file:///d:/Gridbricks/Dockerfile)) that compiles the React application and bundles the FastAPI backend into a hardened `python:3.12-slim` image:
+WindLens provides a production-grade multi-stage container ([Dockerfile](Dockerfile)) that compiles the React application and bundles the FastAPI backend into a hardened `python:3.12-slim` image:
 
 ```bash
 # Build the Docker image
@@ -303,7 +303,7 @@ Alternatively, launch using Docker Compose:
 ```bash
 docker compose up --build
 ```
-Access the application at **[http://localhost:8000](http://localhost:8000)**. The container includes healthcheck polling (`curl -f http://localhost:8000/api/v1/health`).
+Access the application at [http://localhost:8000](http://localhost:8000). The container includes healthcheck polling (`curl -f http://localhost:8000/api/v1/health`).
 
 ---
 
@@ -342,7 +342,7 @@ npx tsc --noEmit
 
 ## 10. Deployment Instructions (Vercel Serverless)
 
-The application is deployed live on Vercel at **[https://x7k2m9p4-livid.vercel.app/](https://x7k2m9p4-livid.vercel.app/)** with zero infrastructure hosting cost:
+The application is deployed live on Vercel at [https://x7k2m9p4-livid.vercel.app/](https://x7k2m9p4-livid.vercel.app/) with zero infrastructure hosting cost:
 - **Frontend:** Vite SPA built by Vercel's build runner and served via global Edge CDN.
 - **Backend:** FastAPI wrapped in an ASGI handler (`api/index.py`) executed within an AWS Lambda Python serverless sandbox.
 - **Data Snapshots:** Lightweight Parquet snapshot files (~122 KB total) are packaged directly into the serverless bundle via `vercel.json` (`data/processed/**`).
