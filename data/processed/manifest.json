@@ -1,0 +1,24 @@
+{
+  "built_at_utc": "2026-10-26T10:59:37.259419+00:00",
+  "actuals": {
+    "total_hourly_intervals": 841,
+    "start_time_min": "2025-12-29T23:00:00Z",
+    "start_time_max": "2026-02-02T23:00:00Z",
+    "mean_actual_mw": 11309.4,
+    "files": [
+      "actuals_hourly.parquet",
+      "actuals_hourly.json"
+    ]
+  },
+  "forecasts": {
+    "total_forecast_records": 21608,
+    "distinct_start_times": 937,
+    "distinct_publish_times": 296,
+    "publish_time_min": "2025-12-28T02:30:00Z",
+    "publish_time_max": "2026-02-02T22:30:00Z",
+    "files": [
+      "forecasts_vintages.parquet",
+      "forecasts_vintages.json"
+    ]
+  }
+}

@@ -1,0 +1,1092 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "WindLens API",
+    "description": "Cutoff-aware UK national wind generation forecast intelligence API. Evaluates day-ahead procurement decisions in January 2026 using authoritative Elexon FUELHH and WINDFOR data.",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/api/v1/health": {
+      "get": {
+        "tags": [
+          "Health"
+        ],
+        "summary": "Get Health",
+        "operationId": "get_health_api_v1_health_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/metadata": {
+      "get": {
+        "tags": [
+          "Metadata"
+        ],
+        "summary": "Get Metadata",
+        "operationId": "get_metadata_api_v1_metadata_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AppMetadataResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/decision": {
+      "get": {
+        "tags": [
+          "Decision Day"
+        ],
+        "summary": "Get Decision Analysis",
+        "operationId": "get_decision_analysis_api_v1_decision_get",
+        "parameters": [
+          {
+            "name": "decision_date",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+              "description": "Decision date in YYYY-MM-DD format (within Jan 2026)",
+              "default": "2026-01-15",
+              "title": "Decision Date"
+            },
+            "description": "Decision date in YYYY-MM-DD format (within Jan 2026)"
+          },
+          {
+            "name": "cutoff_time",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "pattern": "^\\d{2}:\\d{2}$",
+              "description": "Procurement decision cutoff time in HH:MM format",
+              "default": "09:00",
+              "title": "Cutoff Time"
+            },
+            "description": "Procurement decision cutoff time in HH:MM format"
+          },
+          {
+            "name": "cutoff_timezone",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "Timezone context for the cutoff time",
+              "default": "Europe/London",
+              "title": "Cutoff Timezone"
+            },
+            "description": "Timezone context for the cutoff time"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DecisionResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/accuracy": {
+      "get": {
+        "tags": [
+          "Accuracy"
+        ],
+        "summary": "Get Accuracy Analysis",
+        "operationId": "get_accuracy_analysis_api_v1_accuracy_get",
+        "parameters": [
+          {
+            "name": "start_date",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+              "description": "Start decision date in YYYY-MM-DD format",
+              "default": "2026-01-01",
+              "title": "Start Date"
+            },
+            "description": "Start decision date in YYYY-MM-DD format"
+          },
+          {
+            "name": "end_date",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+              "description": "End decision date in YYYY-MM-DD format",
+              "default": "2026-01-31",
+              "title": "End Date"
+            },
+            "description": "End decision date in YYYY-MM-DD format"
+          },
+          {
+            "name": "cutoff_time",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "pattern": "^\\d{2}:\\d{2}$",
+              "description": "Procurement decision cutoff time in HH:MM format",
+              "default": "09:00",
+              "title": "Cutoff Time"
+            },
+            "description": "Procurement decision cutoff time in HH:MM format"
+          },
+          {
+            "name": "cutoff_timezone",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "Timezone context for cutoff",
+              "default": "Europe/London",
+              "title": "Cutoff Timezone"
+            },
+            "description": "Timezone context for cutoff"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccuracyResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/vintages": {
+      "get": {
+        "tags": [
+          "Vintages"
+        ],
+        "summary": "Get Vintage Comparison",
+        "operationId": "get_vintage_comparison_api_v1_vintages_get",
+        "parameters": [
+          {
+            "name": "decision_date",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+              "description": "Decision date in YYYY-MM-DD format",
+              "default": "2026-01-15",
+              "title": "Decision Date"
+            },
+            "description": "Decision date in YYYY-MM-DD format"
+          },
+          {
+            "name": "cutoffs",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "Comma-separated list of cutoff times in HH:MM format",
+              "default": "07:00,09:00,12:00,16:00,22:00",
+              "title": "Cutoffs"
+            },
+            "description": "Comma-separated list of cutoff times in HH:MM format"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VintageResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/": {
+      "get": {
+        "tags": [
+          "Root"
+        ],
+        "summary": "Root",
+        "operationId": "root__get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "AccuracyMetadata": {
+        "properties": {
+          "start_decision_date": {
+            "type": "string",
+            "title": "Start Decision Date"
+          },
+          "end_decision_date": {
+            "type": "string",
+            "title": "End Decision Date"
+          },
+          "cutoff_time": {
+            "type": "string",
+            "title": "Cutoff Time"
+          },
+          "cutoff_timezone": {
+            "type": "string",
+            "title": "Cutoff Timezone"
+          },
+          "total_decision_days": {
+            "type": "integer",
+            "title": "Total Decision Days"
+          },
+          "total_evaluated_intervals": {
+            "type": "integer",
+            "title": "Total Evaluated Intervals"
+          }
+        },
+        "type": "object",
+        "required": [
+          "start_decision_date",
+          "end_decision_date",
+          "cutoff_time",
+          "cutoff_timezone",
+          "total_decision_days",
+          "total_evaluated_intervals"
+        ],
+        "title": "AccuracyMetadata"
+      },
+      "AccuracyResponse": {
+        "properties": {
+          "metadata": {
+            "$ref": "#/components/schemas/AccuracyMetadata"
+          },
+          "overall_metrics": {
+            "$ref": "#/components/schemas/SummaryMetricsSchema"
+          },
+          "daily_breakdown": {
+            "items": {
+              "$ref": "#/components/schemas/DailyBreakdownSchema"
+            },
+            "type": "array",
+            "title": "Daily Breakdown"
+          },
+          "time_of_day_breakdown": {
+            "items": {
+              "$ref": "#/components/schemas/TimeOfDayBreakdownSchema"
+            },
+            "type": "array",
+            "title": "Time Of Day Breakdown"
+          },
+          "lead_time_breakdown": {
+            "items": {
+              "$ref": "#/components/schemas/LeadTimeBreakdownSchema"
+            },
+            "type": "array",
+            "title": "Lead Time Breakdown"
+          }
+        },
+        "type": "object",
+        "required": [
+          "metadata",
+          "overall_metrics",
+          "daily_breakdown",
+          "time_of_day_breakdown",
+          "lead_time_breakdown"
+        ],
+        "title": "AccuracyResponse"
+      },
+      "ActualPointSchema": {
+        "properties": {
+          "start_time": {
+            "type": "string",
+            "title": "Start Time"
+          },
+          "hour_of_day": {
+            "type": "integer",
+            "title": "Hour Of Day"
+          },
+          "actual_mw": {
+            "type": "number",
+            "title": "Actual Mw"
+          }
+        },
+        "type": "object",
+        "required": [
+          "start_time",
+          "hour_of_day",
+          "actual_mw"
+        ],
+        "title": "ActualPointSchema"
+      },
+      "AppMetadataResponse": {
+        "properties": {
+          "app_name": {
+            "type": "string",
+            "title": "App Name"
+          },
+          "version": {
+            "type": "string",
+            "title": "Version"
+          },
+          "target_period": {
+            "type": "string",
+            "title": "Target Period"
+          },
+          "available_decision_dates": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Available Decision Dates"
+          },
+          "available_delivery_dates": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Available Delivery Dates"
+          },
+          "default_cutoff_time": {
+            "type": "string",
+            "title": "Default Cutoff Time"
+          },
+          "default_cutoff_timezone": {
+            "type": "string",
+            "title": "Default Cutoff Timezone"
+          },
+          "data_sources": {
+            "$ref": "#/components/schemas/DataSourcesMetadata"
+          }
+        },
+        "type": "object",
+        "required": [
+          "app_name",
+          "version",
+          "target_period",
+          "available_decision_dates",
+          "available_delivery_dates",
+          "default_cutoff_time",
+          "default_cutoff_timezone",
+          "data_sources"
+        ],
+        "title": "AppMetadataResponse"
+      },
+      "DailyBreakdownSchema": {
+        "properties": {
+          "decision_date": {
+            "type": "string",
+            "title": "Decision Date"
+          },
+          "delivery_date": {
+            "type": "string",
+            "title": "Delivery Date"
+          },
+          "matched_intervals": {
+            "type": "integer",
+            "title": "Matched Intervals"
+          },
+          "mae_mw": {
+            "type": "number",
+            "title": "Mae Mw"
+          },
+          "bias_mw": {
+            "type": "number",
+            "title": "Bias Mw"
+          },
+          "rmse_mw": {
+            "type": "number",
+            "title": "Rmse Mw"
+          },
+          "mape_pct": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Mape Pct"
+          },
+          "baseline_mae_mw": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Baseline Mae Mw"
+          },
+          "baseline_skill_score": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Baseline Skill Score"
+          },
+          "mean_actual_mw": {
+            "type": "number",
+            "title": "Mean Actual Mw"
+          },
+          "mean_forecast_mw": {
+            "type": "number",
+            "title": "Mean Forecast Mw"
+          }
+        },
+        "type": "object",
+        "required": [
+          "decision_date",
+          "delivery_date",
+          "matched_intervals",
+          "mae_mw",
+          "bias_mw",
+          "rmse_mw",
+          "mean_actual_mw",
+          "mean_forecast_mw"
+        ],
+        "title": "DailyBreakdownSchema"
+      },
+      "DataSourcesMetadata": {
+        "properties": {
+          "actuals_source": {
+            "type": "string",
+            "title": "Actuals Source"
+          },
+          "forecast_source": {
+            "type": "string",
+            "title": "Forecast Source"
+          },
+          "fuelhh_unit": {
+            "type": "string",
+            "title": "Fuelhh Unit"
+          },
+          "windfor_unit": {
+            "type": "string",
+            "title": "Windfor Unit"
+          },
+          "alignment_method": {
+            "type": "string",
+            "title": "Alignment Method"
+          }
+        },
+        "type": "object",
+        "required": [
+          "actuals_source",
+          "forecast_source",
+          "fuelhh_unit",
+          "windfor_unit",
+          "alignment_method"
+        ],
+        "title": "DataSourcesMetadata"
+      },
+      "DecisionIntervalSchema": {
+        "properties": {
+          "start_time": {
+            "type": "string",
+            "title": "Start Time",
+            "description": "Hourly delivery interval start ISO UTC"
+          },
+          "hour_of_day": {
+            "type": "integer",
+            "title": "Hour Of Day"
+          },
+          "forecast_mw": {
+            "type": "number",
+            "title": "Forecast Mw"
+          },
+          "actual_mw": {
+            "type": "number",
+            "title": "Actual Mw"
+          },
+          "error_mw": {
+            "type": "number",
+            "title": "Error Mw"
+          },
+          "abs_error_mw": {
+            "type": "number",
+            "title": "Abs Error Mw"
+          },
+          "percentage_error": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Percentage Error"
+          },
+          "error_direction": {
+            "type": "string",
+            "title": "Error Direction"
+          },
+          "publish_time": {
+            "type": "string",
+            "title": "Publish Time"
+          },
+          "lead_time_hours": {
+            "type": "number",
+            "title": "Lead Time Hours"
+          },
+          "age_at_cutoff_hours": {
+            "type": "number",
+            "title": "Age At Cutoff Hours"
+          },
+          "baseline_mw": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Baseline Mw"
+          },
+          "baseline_error_mw": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Baseline Error Mw"
+          }
+        },
+        "type": "object",
+        "required": [
+          "start_time",
+          "hour_of_day",
+          "forecast_mw",
+          "actual_mw",
+          "error_mw",
+          "abs_error_mw",
+          "error_direction",
+          "publish_time",
+          "lead_time_hours",
+          "age_at_cutoff_hours"
+        ],
+        "title": "DecisionIntervalSchema"
+      },
+      "DecisionMetadata": {
+        "properties": {
+          "decision_date": {
+            "type": "string",
+            "title": "Decision Date"
+          },
+          "delivery_date": {
+            "type": "string",
+            "title": "Delivery Date"
+          },
+          "cutoff_timestamp_utc": {
+            "type": "string",
+            "title": "Cutoff Timestamp Utc"
+          },
+          "cutoff_time": {
+            "type": "string",
+            "title": "Cutoff Time"
+          },
+          "cutoff_timezone": {
+            "type": "string",
+            "title": "Cutoff Timezone"
+          },
+          "is_default_cutoff": {
+            "type": "boolean",
+            "title": "Is Default Cutoff"
+          },
+          "cutoff_assumption_note": {
+            "type": "string",
+            "title": "Cutoff Assumption Note"
+          }
+        },
+        "type": "object",
+        "required": [
+          "decision_date",
+          "delivery_date",
+          "cutoff_timestamp_utc",
+          "cutoff_time",
+          "cutoff_timezone",
+          "is_default_cutoff",
+          "cutoff_assumption_note"
+        ],
+        "title": "DecisionMetadata"
+      },
+      "DecisionResponse": {
+        "properties": {
+          "metadata": {
+            "$ref": "#/components/schemas/DecisionMetadata"
+          },
+          "summary_metrics": {
+            "$ref": "#/components/schemas/SummaryMetricsSchema"
+          },
+          "intervals": {
+            "items": {
+              "$ref": "#/components/schemas/DecisionIntervalSchema"
+            },
+            "type": "array",
+            "title": "Intervals"
+          }
+        },
+        "type": "object",
+        "required": [
+          "metadata",
+          "summary_metrics",
+          "intervals"
+        ],
+        "title": "DecisionResponse"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "LeadTimeBreakdownSchema": {
+        "properties": {
+          "lead_time_band": {
+            "type": "string",
+            "title": "Lead Time Band"
+          },
+          "min_lead_time_hours": {
+            "type": "number",
+            "title": "Min Lead Time Hours"
+          },
+          "max_lead_time_hours": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Max Lead Time Hours"
+          },
+          "sample_count": {
+            "type": "integer",
+            "title": "Sample Count"
+          },
+          "mae_mw": {
+            "type": "number",
+            "title": "Mae Mw"
+          },
+          "bias_mw": {
+            "type": "number",
+            "title": "Bias Mw"
+          },
+          "rmse_mw": {
+            "type": "number",
+            "title": "Rmse Mw"
+          },
+          "mape_pct": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Mape Pct"
+          }
+        },
+        "type": "object",
+        "required": [
+          "lead_time_band",
+          "min_lead_time_hours",
+          "sample_count",
+          "mae_mw",
+          "bias_mw",
+          "rmse_mw"
+        ],
+        "title": "LeadTimeBreakdownSchema"
+      },
+      "SummaryMetricsSchema": {
+        "properties": {
+          "total_intervals": {
+            "type": "integer",
+            "title": "Total Intervals"
+          },
+          "matched_intervals": {
+            "type": "integer",
+            "title": "Matched Intervals"
+          },
+          "mae_mw": {
+            "type": "number",
+            "title": "Mae Mw",
+            "description": "Mean Absolute Error in MW"
+          },
+          "rmse_mw": {
+            "type": "number",
+            "title": "Rmse Mw",
+            "description": "Root Mean Square Error in MW"
+          },
+          "bias_mw": {
+            "type": "number",
+            "title": "Bias Mw",
+            "description": "Mean Error (Forecast - Actual) in MW"
+          },
+          "mape_pct": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Mape Pct",
+            "description": "Mean Absolute Percentage Error (%)"
+          },
+          "overforecast_count": {
+            "type": "integer",
+            "title": "Overforecast Count"
+          },
+          "underforecast_count": {
+            "type": "integer",
+            "title": "Underforecast Count"
+          },
+          "exact_count": {
+            "type": "integer",
+            "title": "Exact Count"
+          },
+          "baseline_mae_mw": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Baseline Mae Mw",
+            "description": "Day-ahead persistence baseline MAE in MW"
+          },
+          "baseline_skill_score": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Baseline Skill Score",
+            "description": "Skill score vs baseline: 1 - (MAE/Baseline_MAE)"
+          }
+        },
+        "type": "object",
+        "required": [
+          "total_intervals",
+          "matched_intervals",
+          "mae_mw",
+          "rmse_mw",
+          "bias_mw",
+          "overforecast_count",
+          "underforecast_count",
+          "exact_count"
+        ],
+        "title": "SummaryMetricsSchema"
+      },
+      "TimeOfDayBreakdownSchema": {
+        "properties": {
+          "hour_of_day": {
+            "type": "integer",
+            "title": "Hour Of Day"
+          },
+          "sample_count": {
+            "type": "integer",
+            "title": "Sample Count"
+          },
+          "mean_actual_mw": {
+            "type": "number",
+            "title": "Mean Actual Mw"
+          },
+          "mean_forecast_mw": {
+            "type": "number",
+            "title": "Mean Forecast Mw"
+          },
+          "mae_mw": {
+            "type": "number",
+            "title": "Mae Mw"
+          },
+          "bias_mw": {
+            "type": "number",
+            "title": "Bias Mw"
+          },
+          "rmse_mw": {
+            "type": "number",
+            "title": "Rmse Mw"
+          },
+          "mape_pct": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Mape Pct"
+          }
+        },
+        "type": "object",
+        "required": [
+          "hour_of_day",
+          "sample_count",
+          "mean_actual_mw",
+          "mean_forecast_mw",
+          "mae_mw",
+          "bias_mw",
+          "rmse_mw"
+        ],
+        "title": "TimeOfDayBreakdownSchema"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "ctx": {
+            "type": "object",
+            "title": "Context"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      },
+      "VintagePointSchema": {
+        "properties": {
+          "start_time": {
+            "type": "string",
+            "title": "Start Time"
+          },
+          "hour_of_day": {
+            "type": "integer",
+            "title": "Hour Of Day"
+          },
+          "forecast_mw": {
+            "type": "number",
+            "title": "Forecast Mw"
+          },
+          "error_mw": {
+            "type": "number",
+            "title": "Error Mw"
+          },
+          "publish_time": {
+            "type": "string",
+            "title": "Publish Time"
+          },
+          "lead_time_hours": {
+            "type": "number",
+            "title": "Lead Time Hours"
+          }
+        },
+        "type": "object",
+        "required": [
+          "start_time",
+          "hour_of_day",
+          "forecast_mw",
+          "error_mw",
+          "publish_time",
+          "lead_time_hours"
+        ],
+        "title": "VintagePointSchema"
+      },
+      "VintageResponse": {
+        "properties": {
+          "metadata": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Metadata"
+          },
+          "actuals": {
+            "items": {
+              "$ref": "#/components/schemas/ActualPointSchema"
+            },
+            "type": "array",
+            "title": "Actuals"
+          },
+          "vintages": {
+            "items": {
+              "$ref": "#/components/schemas/VintageRunSchema"
+            },
+            "type": "array",
+            "title": "Vintages"
+          }
+        },
+        "type": "object",
+        "required": [
+          "metadata",
+          "actuals",
+          "vintages"
+        ],
+        "title": "VintageResponse"
+      },
+      "VintageRunSchema": {
+        "properties": {
+          "cutoff_time": {
+            "type": "string",
+            "title": "Cutoff Time"
+          },
+          "cutoff_timestamp_utc": {
+            "type": "string",
+            "title": "Cutoff Timestamp Utc"
+          },
+          "mae_mw": {
+            "type": "number",
+            "title": "Mae Mw"
+          },
+          "rmse_mw": {
+            "type": "number",
+            "title": "Rmse Mw"
+          },
+          "bias_mw": {
+            "type": "number",
+            "title": "Bias Mw"
+          },
+          "mape_pct": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Mape Pct"
+          },
+          "mean_forecast_mw": {
+            "type": "number",
+            "title": "Mean Forecast Mw"
+          },
+          "series": {
+            "items": {
+              "$ref": "#/components/schemas/VintagePointSchema"
+            },
+            "type": "array",
+            "title": "Series"
+          }
+        },
+        "type": "object",
+        "required": [
+          "cutoff_time",
+          "cutoff_timestamp_utc",
+          "mae_mw",
+          "rmse_mw",
+          "bias_mw",
+          "mean_forecast_mw",
+          "series"
+        ],
+        "title": "VintageRunSchema"
+      }
+    }
+  }
+}
