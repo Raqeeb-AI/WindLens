@@ -1,0 +1,27 @@
+{
+  "verified_at_utc": "2026-10-26T10:55:42.369879+00:00",
+  "sources": {
+    "FUELHH": {
+      "endpoint": "https://data.elexon.co.uk/bmrs/api/v1/datasets/FUELHH/stream",
+      "auth_required": false,
+      "unit": "MW (interval-average power)",
+      "granularity_minutes": 30,
+      "fuel_type_filter": "WIND",
+      "sample_record_count": 49
+    },
+    "WINDFOR": {
+      "endpoint": "https://data.elexon.co.uk/bmrs/api/v1/datasets/WINDFOR/stream",
+      "auth_required": false,
+      "unit": "MW (interval-average power forecast)",
+      "granularity_minutes": 60,
+      "horizon_hours": 72,
+      "publication_cadence_hours": "~2-4 hours",
+      "sample_record_count": 584
+    }
+  },
+  "comparability": {
+    "status": "Verified compatible via 1-hour arithmetic mean of FUELHH half-hours",
+    "fuelhh_aggregation": "Hourly mean of Period 1 (00:00-00:30) and Period 2 (00:30-01:00)",
+    "unit": "MW"
+  }
+}
