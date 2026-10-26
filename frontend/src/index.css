@@ -1,0 +1,53 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #FAF8F4;
+  --surface: #FFFFFF;
+  --surface-subtle: #F3F0E9;
+  --border: #E5E0D7;
+  --border-strong: #D1CAC0;
+  --text-primary: #20201D;
+  --text-secondary: #69675F;
+  --text-tertiary: #89867E;
+  --forecast: #D95635;
+  --actual: #252622;
+  --underforecast: #267568;
+  --overforecast: #A96E13;
+  --baseline: #7C7971;
+  --success: #267568;
+  --warning: #A96E13;
+  --danger: #B74335;
+  --focus-ring: #6B7F59;
+}
+
+body {
+  margin: 0;
+  background-color: var(--background);
+  color: var(--text-primary);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Tabular numerals for dense financial/energy tables */
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Custom restrained scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #F3F0E9;
+}
+::-webkit-scrollbar-thumb {
+  background: #D1CAC0;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #89867E;
+}
